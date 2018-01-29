@@ -117,6 +117,7 @@ class ViewController: UIViewController {
             runningNumber = ""
             outputLbl.text = result
             count = 0
+            currentOperation = .NULL
         } else {
             if runningNumber == "" {
                 result = "\(Double(sum) / Double(count))"
@@ -126,13 +127,14 @@ class ViewController: UIViewController {
                 result = "\(Double(sum) / Double(count))"
             }
             leftValue = result
-            if (Double(result)!.truncatingRemainder(dividingBy: 1) == 0) {
+            if (canConvertToInt(num: result)) {
                 result = "\(Int(Double(result)!))"
             }
             runningNumber = ""
             outputLbl.text = result
             count = 0
             sum = 0
+            currentOperation = .NULL
         }
     }
     
@@ -168,6 +170,7 @@ class ViewController: UIViewController {
                     result = runningNumber
                 }
                 runningNumber = ""
+                currentOperation = .NULL
             } else if leftValue != "" && Int(leftValue)! >= 0 && Double(leftValue)!.truncatingRemainder(dividingBy: 1) == 0 {
                 var prod = 1
                 var num: Int = Int(leftValue)!
@@ -202,7 +205,7 @@ class ViewController: UIViewController {
             if runningNumber != "" && leftValue != "" && runningNumber != "." {
                 rightValue = runningNumber
                 runningNumber = ""
-                
+                var success = true
                 if currentOperation == .Add {
                     result = "\(Double(leftValue)! + Double(rightValue)!)"
                 } else if currentOperation == .Subtract {
@@ -212,14 +215,23 @@ class ViewController: UIViewController {
                 } else if currentOperation == .Divide {
                     result = "\(Double(leftValue)! / Double(rightValue)!)"
                 } else if currentOperation == .Mod {
-                    let times = Int(leftValue)! / Int(rightValue)!
-                    result = "\(Int(leftValue)! - (times * Int(rightValue)!))"
+                    if (canConvertToInt(num: leftValue) && canConvertToInt(num: rightValue)) {
+                        let times = Int(leftValue)! / Int(rightValue)!
+                        result = "\(Int(leftValue)! - (times * Int(rightValue)!))"
+                    } else {
+                        success = false
+                        result = "Can't mod"
+                        rightValue = ""
+                        currentOperation = .NULL
+                    }
                 }
                 
-                if (Double(result)!.truncatingRemainder(dividingBy: 1) == 0) {
+                if (success && canConvertToInt(num: result)) {
                     result = "\(Int(Double(result)!))"
                 }
-                leftValue = result
+                if (success) {
+                    leftValue = result
+                }
                 outputLbl.text = result
             }
             if runningNumber != "" && leftValue == "" && runningNumber == "." {
@@ -235,6 +247,10 @@ class ViewController: UIViewController {
             runningNumber = ""
             currentOperation = operation
         }
+    }
+    
+    func canConvertToInt(num: String) -> Bool {
+        return Double(num)!.truncatingRemainder(dividingBy: 1) == 0
     }
     
 }
