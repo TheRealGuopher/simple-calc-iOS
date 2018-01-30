@@ -146,46 +146,34 @@ class ViewController: UIViewController {
                 count += 1
             }
         } else if currentOperation == .Fact {
-            if runningNumber != "" && Int(runningNumber)! >= 0 && Double(runningNumber)!.truncatingRemainder(dividingBy: 1) == 0 {
-                var prod = 1
-                var num = Int(runningNumber)!
-                var success = true
+            if runningNumber != "" && Int(Double(runningNumber)!) >= 0 && Double(runningNumber)!.truncatingRemainder(dividingBy: 1) == 0 {
+                var prod = 1.0
+                var num = Double(runningNumber)!
                 while num > 1 {
-                    if (prod * num < 2147483647) {
-                        prod *= num
-                        num -= 1
-                    } else {
-                        success = false
-                        outputLbl.text = "too big"
-                        break
-                    }
-                }
-                if success {
-                    result = String(prod)
-                    leftValue = result
-                    runningNumber = ""
-                    outputLbl.text = result
-                } else {
-                    leftValue = runningNumber
-                    result = runningNumber
-                }
-                runningNumber = ""
-                currentOperation = .NULL
-            } else if leftValue != "" && Int(leftValue)! >= 0 && Double(leftValue)!.truncatingRemainder(dividingBy: 1) == 0 {
-                var prod = 1
-                var num: Int = Int(leftValue)!
-                while num > 1 {
-                    if (prod * num < 2147483647) {
-                        prod *= num
-                        num -= 1
-                    } else {
-                        break
-                    }
+                    prod *= num
+                    num -= 1
                 }
                 result = String(prod)
                 leftValue = result
                 runningNumber = ""
                 outputLbl.text = result
+                currentOperation = .NULL
+            } else if leftValue != "" && Int(Double(leftValue)!) >= 0 && Double(leftValue)!.truncatingRemainder(dividingBy: 1) == 0 {
+                var prod = 1.0
+                var num = Double(leftValue)!
+                while num > 1 {
+                    prod *= num
+                    num -= 1
+                }
+                result = String(prod)
+                leftValue = result
+                runningNumber = ""
+                outputLbl.text = result
+                currentOperation = .NULL
+            }
+            if (leftValue == "inf" || result == "inf") {
+                leftValue = ""
+                result = ""
             }
         } else if currentOperation == .Avg {
             if runningNumber != "" {
@@ -226,7 +214,7 @@ class ViewController: UIViewController {
                     }
                 }
                 
-                if (success && canConvertToInt(num: result)) {
+                if (success && canConvertToInt(num: result) && result.count < 12) {
                     result = "\(Int(Double(result)!))"
                 }
                 if (success) {
