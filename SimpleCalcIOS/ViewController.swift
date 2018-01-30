@@ -30,7 +30,7 @@ class ViewController: UIViewController {
     var result = ""
     var currentOperation:Operation = .NULL
     var count = 0
-    var sum = 0
+    var sum = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -123,7 +123,7 @@ class ViewController: UIViewController {
                 result = "\(Double(sum) / Double(count))"
             } else {
                 count += 1
-                sum += Int(runningNumber)!
+                sum += Double(runningNumber)!
                 result = "\(Double(sum) / Double(count))"
             }
             leftValue = result
@@ -140,13 +140,13 @@ class ViewController: UIViewController {
     
     func operation(operation: Operation) {
         if currentOperation == .Count {
-            if runningNumber != "" {
+            if runningNumber != "" && runningNumber != "." {
                 leftValue = runningNumber
                 runningNumber = ""
                 count += 1
             }
         } else if currentOperation == .Fact {
-            if runningNumber != "" && Int(Double(runningNumber)!) >= 0 && Double(runningNumber)!.truncatingRemainder(dividingBy: 1) == 0 {
+            if runningNumber != "" && runningNumber != "." && Int(Double(runningNumber)!) >= 0 && Double(runningNumber)!.truncatingRemainder(dividingBy: 1) == 0 {
                 var prod = 1.0
                 var num = Double(runningNumber)!
                 while num > 1 {
@@ -158,7 +158,7 @@ class ViewController: UIViewController {
                 runningNumber = ""
                 outputLbl.text = result
                 currentOperation = .NULL
-            } else if leftValue != "" && Int(Double(leftValue)!) >= 0 && Double(leftValue)!.truncatingRemainder(dividingBy: 1) == 0 {
+            } else if leftValue != "" && runningNumber != "." && Int(Double(leftValue)!) >= 0 && Double(leftValue)!.truncatingRemainder(dividingBy: 1) == 0 {
                 var prod = 1.0
                 var num = Double(leftValue)!
                 while num > 1 {
@@ -176,13 +176,13 @@ class ViewController: UIViewController {
                 result = ""
             }
         } else if currentOperation == .Avg {
-            if runningNumber != "" {
-                sum += Int(runningNumber)!
+            if runningNumber != "" && runningNumber != "." {
+                sum += Double(runningNumber)!
                 leftValue = runningNumber
                 runningNumber = ""
                 count += 1
-            } else if leftValue != "" {
-                sum += Int(leftValue)!
+            } else if leftValue != "" && runningNumber != "." {
+                sum += Double(leftValue)!
                 runningNumber = ""
                 count += 1
             }
